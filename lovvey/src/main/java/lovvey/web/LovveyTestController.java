@@ -44,7 +44,7 @@ public class LovveyTestController {
 			
 			//json->String
 			Test test =objectMapper.readValue(messageBody, Test.class);
-			
+		       
 			//로직 작성하는곳.
 			System.out.println("test: " +test);
 			

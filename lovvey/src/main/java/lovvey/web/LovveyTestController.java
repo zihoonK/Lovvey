@@ -61,7 +61,7 @@ public class LovveyTestController {
 	public String test() {
 		return "/test";
 	}
-	
+	   
 	//로그인 접속
 	@RequestMapping(value="/kakaologinpage", method=RequestMethod.GET)
 	public String kakaologin() throws Exception{

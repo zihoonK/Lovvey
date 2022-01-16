@@ -3,12 +3,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+
+
 <title>Insert title here</title>
 </head>
 <body>
 
-
-
+<form action="http://localhost:8080/lovvey/logoutredirect" method="GET">
+<button>로그아웃</button>
+</form>
 </body>
 </html>

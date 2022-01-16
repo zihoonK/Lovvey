@@ -1,9 +1,19 @@
 package lovvey.web;
 
 
-import javax.annotation.Resource;
 
-import org.apache.logging.slf4j.Log4jLogger;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,17 +28,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-
 import lovvey.domain.Test;
 import lovvey.service.LovveyTestService;
-
+import lovvey.util.httpConnection;
 
 
 
 @Controller
 public class LovveyTestController {
-
-
+	
+	 httpConnection conn= httpConnection.getInstance();
 	
 	@Resource(name="lovveyTestService")
 	private LovveyTestService lovveyTestService;
@@ -57,12 +66,17 @@ public class LovveyTestController {
 		
 	}
 	
-	@RequestMapping(value="/test",method=RequestMethod.GET )
-	public String test() {
-		return "/test";
+	@RequestMapping(value="/home" )
+	public String home() {
+		
+		return "/kakaologin";
 	}
 	   
-	//로그인 접속
+	/**
+	 * @Method 카카오 로그인 페이지
+	 * @return 카카오 로그인으로 이동
+	 * @throws Exception 
+	 */
 	@RequestMapping(value="/kakaologinpage", method=RequestMethod.GET)
 	public String kakaologin() throws Exception{
 				
@@ -73,20 +87,55 @@ public class LovveyTestController {
 	}
 	
 	
-//	//카카오 로그인
+/**
+ * 
+ * @param code 카카로 로그인 토큰
+ * @return 
+ * @throws Exception
+ */
+	
+	
 	@RequestMapping(value="/kakaologin", method=RequestMethod.GET)
-	public String kakaologinTest3(@RequestParam String code) throws Exception{
-		
-		
-		
+	public String kakaologinTest3(@RequestParam String code, HttpSession session) throws Exception{
+
 		System.out.println("testCode = "+code );
-				
+		
+		session.setAttribute("access_token", code);
+		
+		//session.setAttribute("access_token", output.getAccess_token());
 		return "/kakaologin";
+	}
+	
+	
+	@RequestMapping(value="/logoutredirect", method=RequestMethod.GET)
+	public String logout(HttpSession session) throws Exception{
+		
+	// String url="https://kapi.kakao.com/oauth/logout?client_id=0c12f01c99a0a4f073267e6067275788&logout_redirect_uri=http://localhost:8080/lovvey/logout";
+		
+		String access_token = (String)session.getAttribute("access_token");
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("Authorization", "Bearer "+ access_token);
+		System.out.println("https://kapi.kakao.com/v1/user/logout"+map);
+		String result = conn.HttpPostConnection("https://kapi.kakao.com/v1/user/logout", map).toString();
+		System.out.println(result); 
+	   
+	 
+	   
+	return "/kakaologin";
+	}
+	
+	@RequestMapping(value="/logout", method=RequestMethod.GET)
+	public String logoutredirect(@RequestParam String client_id) throws Exception{
+		
+		System.out.println(client_id);
+	return "/kakaologin";
 	}
 	
 
 	
+
 	
+
 	
 	
 	

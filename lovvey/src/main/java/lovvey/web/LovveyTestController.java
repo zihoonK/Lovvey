@@ -90,14 +90,12 @@ public class LovveyTestController {
 
 	@RequestMapping(value = "/kakaologin", method = RequestMethod.GET)
 	public String kakaologinTest3(@RequestParam String code, HttpSession session) throws Exception {
-
-		System.out.println("testCode = " + code);
+		System.out.println("===============kakaologin=====================");
 		
-		String access_token= conn.getAccessToken(code);
-		
-		System.out.println("access_token: "+ access_token);
+		String access_token= conn.getAccessToken(code);		
 		session.setAttribute("access_token", access_token);
-
+		
+		System.out.println("===============kakaologin=====================");
 		return "/kakaologin";
 	}
 
@@ -110,14 +108,15 @@ public class LovveyTestController {
 
 	@RequestMapping(value = "/logoutredirect", method=RequestMethod.POST)
 	public String logout(HttpSession session) throws Exception {
-
-		String access_token = (String) session.getAttribute("access_token");
-	
-
-		conn.HttpPostLogOut(access_token);
+		System.out.println("===============logoutredirect=====================");
+		
+		String access_token = (String) session.getAttribute("access_token");	
+		String JsonString=conn.HttpPostLogOut(access_token);
+		System.out.println( "확인용 코드입니다."+test);
+		
 		session.removeAttribute(access_token);
-		System.out.println(access_token);
-
+		session.invalidate();
+		System.out.println("===============logoutredirect=====================");
 		return "/kakaologin";
 
 	}

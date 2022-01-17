@@ -91,31 +91,46 @@ public class httpConnection {
 		return accessToken;
 	}
 	
-
-	public void HttpPostLogOut(String  access_token) throws Exception {
+/**
+ * 
+ * @param access_token
+ * @return result 값이 json형태로 return 함.
+ * @throws Exception
+ */
+	
+	//개인의견으로 map으로 error코드를 넘기는게 어떻게 생각하는지에 대해 곰곰히 생각해볼것.
+	public String HttpPostLogOut(String  access_token) throws Exception {
 		String reqURL = "https://kapi.kakao.com/v1/user/logout";
 		String id;
+		URL url = new URL(reqURL);
+		String result = "";
+		String line = "";
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		try {
-			URL url = new URL(reqURL);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Authorization", "Bearer "+ access_token);
 		
-			
-//			System.out.println(con.getResponseMessage());
-//			
-//			
-//			System.out.println("con.toString() =" +con.toString()+", "+con.getRequestProperties()+"," + con.getHeaderFields());
 			int responseCode = con.getResponseCode();
+			
+			if(responseCode == 400 || responseCode==401 || responseCode == 500 ) {
+				
+				System.out.println("에러코드 : "+ responseCode);
+				
+				
+			}
+			
+			
 			System.out.println("resposeCode  = "+ responseCode);
 			
 			BufferedReader br= new BufferedReader(new InputStreamReader(con.getInputStream()));
 			
-			String result = "";
-			String line = "";
+		
 			while((line= br.readLine())!= null) {
 				result+=line;
 			}
+			
+			System.out.println("result값 : " + result);
 			
 			JsonParser parser = new JsonParser();
 			JsonElement element =parser.parse(result);
@@ -127,9 +142,12 @@ public class httpConnection {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			
 		}
+		
+		return result;
+		
+		
+		
 
 	}
 	
@@ -188,14 +206,18 @@ public class httpConnection {
 
 	// 서버에 요청하는 메소드
 	public StringBuffer responseHttp(HttpURLConnection con) throws IOException {
+		System.out.println("흐름 확인용 코드입니다1.");
 		StringBuffer response = new StringBuffer();
 
 		int responseCode = con.getResponseCode();
 		BufferedReader br;
+		System.out.println("흐름 확인용 코드입니다2."+responseCode);
 		if (responseCode == 200) { // 정상 호출
 			br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			System.out.println("흐름 확인용 코드입니다.3"+br.readLine());
 		} else { // 에러 발생
 			br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+			System.out.println("흐름 확인용 코드입니다.4"+br);
 		}
 
 		String inputLine;
@@ -203,7 +225,8 @@ public class httpConnection {
 			response.append(inputLine);
 		}
 		br.close();
-
+		System.out.println("흐름 확인용 코드입니다5.");
+		
 		return response;
 	}
 

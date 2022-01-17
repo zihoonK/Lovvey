@@ -95,7 +95,7 @@ public class LovveyTestController {
 		
 		String access_token= conn.getAccessToken(code);
 		
-		System.out.println("access_token"+ access_token);
+		System.out.println("access_token: "+ access_token);
 		session.setAttribute("access_token", access_token);
 
 		return "/kakaologin";
@@ -112,17 +112,9 @@ public class LovveyTestController {
 	public String logout(HttpSession session) throws Exception {
 
 		String access_token = (String) session.getAttribute("access_token");
-		String reqURL = "https://kapi.kakao.com/v1/user/logout";
-
 	
 
-		/**
-		 * 2번
-		 */
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("Authorization", "Bearer " + access_token);
-
-		conn.HttpPostLogOut(reqURL, map, access_token);
+		conn.HttpPostLogOut(access_token);
 		session.removeAttribute(access_token);
 		System.out.println(access_token);
 

@@ -36,12 +36,17 @@ public class httpConnection {
 		String reqURL = "https://kauth.kakao.com/oauth/token";
 		
 		try {
+			/**
+			 * 요청하기.
+			 */
 			URL url = new URL(reqURL);
 			HttpURLConnection con = (HttpURLConnection)url.openConnection();
 			con.setRequestMethod("POST");
 			con.setDoOutput(true);
 			
-			
+			/**
+			 * 
+			 */
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
 			StringBuffer sb = new StringBuffer();
 			sb.append("grant_type=authorization_code");
@@ -57,6 +62,9 @@ public class httpConnection {
 			int responseCode = con.getResponseCode();
 			System.out.println("response code =" + responseCode);
 			
+			/**
+			 * 읽기.
+			 */
 			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			
 			String line = "";
@@ -83,26 +91,21 @@ public class httpConnection {
 		return accessToken;
 	}
 	
-	
-	
-	
-	
-	
-	public void HttpPostLogOut(String apiURL, Map<String, String> params, String  access_token) throws Exception {
 
-		
+	public void HttpPostLogOut(String  access_token) throws Exception {
+		String reqURL = "https://kapi.kakao.com/v1/user/logout";
+		String id;
 		try {
-			URL url = new URL(apiURL);
+			URL url = new URL(reqURL);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
-			con.setRequestProperty("Content-Type", "application/json; utf-8");
 			con.setRequestProperty("Authorization", "Bearer "+ access_token);
 		
 			
-			System.out.println(con.getResponseMessage());
-			
-			
-			System.out.println("con.toString() =" +con.toString()+", "+con.getRequestProperties()+"," + con.getHeaderFields());
+//			System.out.println(con.getResponseMessage());
+//			
+//			
+//			System.out.println("con.toString() =" +con.toString()+", "+con.getRequestProperties()+"," + con.getHeaderFields());
 			int responseCode = con.getResponseCode();
 			System.out.println("resposeCode  = "+ responseCode);
 			
@@ -114,7 +117,13 @@ public class httpConnection {
 				result+=line;
 			}
 			
+			JsonParser parser = new JsonParser();
+			JsonElement element =parser.parse(result);
+			id=element.getAsJsonObject().get("id").getAsString();
 			System.out.println(result);
+			
+			br.close();
+			
 			
 		} catch (IOException e) {
 			e.printStackTrace();

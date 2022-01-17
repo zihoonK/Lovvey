@@ -1,0 +1,22 @@
+package lovvey.util;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+public class HttpConnection {
+
+	
+	public static final String ENCODING = "UTF-8";
+
+	private HttpConnection(){}
+	
+	private static class httpConnection_Singieton{
+		private static final HttpConnection instance = new HttpConnection();
+	}
+	
+	//파라메터 URL 인코딩
+		public String URLencoder(String contents) throws UnsupportedEncodingException {
+			return URLEncoder.encode(URLEncoder.encode(contents, ENCODING), "MS949");
+		}
+	
+}

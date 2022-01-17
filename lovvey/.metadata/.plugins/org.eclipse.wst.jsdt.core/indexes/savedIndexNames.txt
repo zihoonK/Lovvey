@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\Users\EaBell\Desktop\lovvey - 복사본\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1007148137.index
+842452696.index
+853509254.index
+2150979230.index
+732408913.index
+4038525593.index

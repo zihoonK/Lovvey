@@ -1,0 +1,21 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+
+
+<form action="https://kauth.kakao.com/oauth/authorize?
+response_type=code&client_id=0c12f01c99a0a4f073267e6067275788
+&redirect_uri=http://localhost:8080/lovvey/kakaologin" >
+
+<button>로그인~!</button>
+</form>
+
+</html>

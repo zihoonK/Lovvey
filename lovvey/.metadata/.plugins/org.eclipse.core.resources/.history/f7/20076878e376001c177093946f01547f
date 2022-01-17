@@ -1,0 +1,13 @@
+package lovvey.util;
+
+public class httpConnection {
+
+	
+	public static final String ENCODING = "UTF-8";
+
+	private httpConnection(){}
+	
+	private static class httpConnection_Singieton{
+		private static final httpConnection instance = new httpConnection();
+	}
+}

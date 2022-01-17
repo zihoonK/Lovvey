@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<form action="http://localhost:8080/lovvey/logoutredirect" method="GET">
+<form action="http://localhost:8080/lovvey/logoutredirect" method="POST">
 <button>로그아웃</button>
 </form>
 </body>

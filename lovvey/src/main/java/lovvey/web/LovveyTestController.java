@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,7 +37,7 @@ public class LovveyTestController {
 	private LovveyTestService lovveyTestService;
 
 	// Jackson
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private static ObjectMapper objectMapper = new ObjectMapper();
 
 	@ResponseBody
 	@RequestMapping(value = "/testInsert", method = RequestMethod.GET)
@@ -63,7 +63,7 @@ public class LovveyTestController {
 	@RequestMapping(value = "/home")
 	public String home() {
 
-		return "/kakaologin";
+		return "redirect:/kakaologin";
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class LovveyTestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/kakaologinpage", method = RequestMethod.GET)
-	public String kakaologin() throws Exception {
+	public String KakaologinPage() throws Exception {
 
 		String id = "0c12f01c99a0a4f073267e6067275788";
 		String redirect_uri = "http://localhost:8080/lovvey/kakaologin";
@@ -82,14 +82,14 @@ public class LovveyTestController {
 	}
 
 	/**
-	 * 
+	 * @Method AccessToken 얻기
 	 * @param code 카카로 로그인 코드를 가지고 있다.
-	 * @return
+	 * @return /kakaologin 페이지로 이동.
 	 * @throws Exception
 	 */
 
 	@RequestMapping(value = "/kakaologin", method = RequestMethod.GET)
-	public String kakaologinTest3(@RequestParam String code, HttpSession session) throws Exception {
+	public String kakaologin(@RequestParam String code, HttpSession session) throws Exception {
 		System.out.println("===============kakaologin=====================");
 		
 		String access_token= conn.getAccessToken(code);		
@@ -100,25 +100,47 @@ public class LovveyTestController {
 	}
 
 	/**
-	 * 
+	 * @Method 회원 탈퇴
 	 * @param session 계정 토큰을 가지고 있다.
 	 * @return /kakaologin 페이지로 이동.
 	 * @throws Exception
+	 * 
 	 */
 
-	@RequestMapping(value = "/logoutredirect", method=RequestMethod.POST)
-	public String logout(HttpSession session) throws Exception {
+	@RequestMapping(value = "/kakaologout", method=RequestMethod.POST)
+	public String Logout(HttpSession session, Model model) throws Exception {
 		System.out.println("===============logoutredirect=====================");
 		
-		String access_token = (String) session.getAttribute("access_token");	
-		String JsonString=conn.HttpPostLogOut(access_token);
-		System.out.println( "확인용 코드입니다."+test);
+		String access_token = (String) session.getAttribute("access_token");
 		
-		session.removeAttribute(access_token);
-		session.invalidate();
-		System.out.println("===============logoutredirect=====================");
+		/**
+		 * session.getAttribute("access_token")이 존재 확인
+		 */
+		if(access_token != null) {
+			String JsonString=conn.HttpPostLogout(access_token);
+			//String JsonString=conn.HttpPostLogOut(access_token);
+			System.out.println( "확인용 코드입니다."+JsonString);
+			
+			session.removeAttribute(access_token);
+			session.invalidate();
+			System.out.println("===============logoutredirect 성공역역입니다.=====================");
+			
+		}else {
+			model.addAttribute("error", "세션이 존재 하지 않습니다.");
+			System.out.println("===============logoutredirectError영역입니다.=====================");	
+		}
+
 		return "/kakaologin";
 
 	}
+	
+	@RequestMapping(value="/logout")
+	public String AccountWithdrawal(HttpSession session, Model model) throws Exception{
+		
+		
+		return "/kakaologin";
+	}
+	
+	
 
 }

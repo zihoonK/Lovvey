@@ -29,6 +29,11 @@ public class httpConnection {
 		return httpConnection_Singieton.instance;
 	}
 
+	/**
+	 *  토큰 받기
+	 * @param code 계정토큰을 받아온다.
+	 * @return String
+	 */
 	public String getAccessToken(String code) {
 		
 		String accessToken = "";
@@ -92,14 +97,14 @@ public class httpConnection {
 	}
 	
 /**
- * 
+ *  카카오 로그아웃
  * @param access_token
- * @return result 값이 json형태로 return 함.
+ * @return String
  * @throws Exception
  */
 	
 	//개인의견으로 map으로 error코드를 넘기는게 어떻게 생각하는지에 대해 곰곰히 생각해볼것.
-	public String HttpPostLogOut(String  access_token) throws Exception {
+	public String HttpPostLogout(String  access_token) throws Exception {
 		String reqURL = "https://kapi.kakao.com/v1/user/logout";
 		String id;
 		URL url = new URL(reqURL);
@@ -112,44 +117,48 @@ public class httpConnection {
 			con.setRequestProperty("Authorization", "Bearer "+ access_token);
 		
 			int responseCode = con.getResponseCode();
-			
-			if(responseCode == 400 || responseCode==401 || responseCode == 500 ) {
-				
-				System.out.println("에러코드 : "+ responseCode);
-				
-				
-			}
-			
-			
 			System.out.println("resposeCode  = "+ responseCode);
-			
-			BufferedReader br= new BufferedReader(new InputStreamReader(con.getInputStream()));
-			
-		
-			while((line= br.readLine())!= null) {
-				result+=line;
+			if(responseCode == 200) {
+				BufferedReader br= new BufferedReader(new InputStreamReader(con.getInputStream()));
+				
+				
+				while((line= br.readLine())!= null) {
+					result+=line;
+				}
+				
+				System.out.println("result값 : " + result);
+				
+				JsonParser parser = new JsonParser();
+				JsonElement element =parser.parse(result);
+				id=element.getAsJsonObject().get("id").getAsString();
+				System.out.println(result);
+				
+				br.close();
+			}else {
+				System.out.println("에러코드 : "+ responseCode);
 			}
-			
-			System.out.println("result값 : " + result);
-			
-			JsonParser parser = new JsonParser();
-			JsonElement element =parser.parse(result);
-			id=element.getAsJsonObject().get("id").getAsString();
-			System.out.println(result);
-			
-			br.close();
-			
+	
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		return result;
-		
-		
-		
 
 	}
+
+	
+	/**
+	 *  카카오계정과 함께 로그아웃
+	 * @param access_token
+	 * @return null
+	 */
+	public String HttpPostAccountWithdrawal(String access_token) {
+		String reqURL = "";
+		return null;
+	}
+	
+	
 	
 	
 	

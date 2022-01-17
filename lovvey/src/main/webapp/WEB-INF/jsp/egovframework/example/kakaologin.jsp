@@ -9,8 +9,8 @@
 </head>
 <body>
 
-<form action="http://localhost:8080/lovvey/logoutredirect" method="POST">
-<button>로그아웃</button>
+<form action="http://localhost:8080/lovvey/kakaologout" method="POST">
+<button>회원탈퇴</button>
 </form>
 </body>
 </html>

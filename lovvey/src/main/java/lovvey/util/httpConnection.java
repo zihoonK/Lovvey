@@ -13,11 +13,13 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class httpConnection {
 	public static final String ENCODING = "UTF-8";
-
+	public static final String hostServer="https://kapi.kakao.com";
+	
 	private httpConnection() {
 	}
 
@@ -29,6 +31,60 @@ public class httpConnection {
 		return httpConnection_Singieton.instance;
 	}
 
+	public String getUserInfo(String accessToken) {
+		
+		String reqURL=hostServer+"/v2/user/me";
+		String result ="";
+		String line ="";
+		JsonObject kakao_account=null;
+		
+		try {
+			URL url = new URL(reqURL);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Authorization", "Bearer "+ accessToken);
+			
+			int responseCode = con.getResponseCode();
+			System.out.println("getUserInfo = "+ responseCode);
+			
+			if(responseCode == 200) {
+				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				
+				while((line = br.readLine())!=null) {
+					result+=line;
+				}
+				
+				System.out.println("response body : " + result);
+				JsonParser parser = new JsonParser();
+				JsonElement element = parser.parse(result);
+				
+				JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+				kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+				
+				/**
+				 * USER DAO작성 해야함.
+				 */
+				
+
+				br.close();
+				
+			}else {
+				System.out.println("에러 코드 :"+responseCode);
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
+		return kakao_account.getAsString();
+	}
+	
+	
+	
+	
+	
+	
 	/**
 	 *  토큰 받기
 	 * @param code 계정토큰을 받아온다.
@@ -120,8 +176,7 @@ public class httpConnection {
 			System.out.println("resposeCode  = "+ responseCode);
 			if(responseCode == 200) {
 				BufferedReader br= new BufferedReader(new InputStreamReader(con.getInputStream()));
-				
-				
+
 				while((line= br.readLine())!= null) {
 					result+=line;
 				}

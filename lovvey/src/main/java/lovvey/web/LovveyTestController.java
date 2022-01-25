@@ -28,6 +28,14 @@ import lovvey.domain.Test;
 import lovvey.service.LovveyTestService;
 import lovvey.util.httpConnection;
 
+/**
+ * 
+ * @author EaBell
+ *   
+ *   컨트롤러 hashMAP으로 return값으로 받아서 값 넣는거 생각해두기.
+ */
+
+
 @Controller
 public class LovveyTestController {
 
@@ -89,13 +97,23 @@ public class LovveyTestController {
 	 */
 
 	@RequestMapping(value = "/kakaologin", method = RequestMethod.GET)
+	//@ResponseBody
 	public String kakaologin(@RequestParam String code, HttpSession session) throws Exception {
+		
+	System.out.println("code = "+ code);
+		
 		System.out.println("===============kakaologin=====================");
 		
-		String access_token= conn.getAccessToken(code);		
+		
+		
+		String access_token= conn.getAccessToken(code);
+		System.out.println("access_token입니다 =" +access_token);
 		session.setAttribute("access_token", access_token);
 		
 		System.out.println("===============kakaologin=====================");
+		
+		
+		
 		return "/kakaologin";
 	}
 
@@ -108,14 +126,16 @@ public class LovveyTestController {
 	 */
 
 	@RequestMapping(value = "/kakaologout", method=RequestMethod.POST)
-	public String Logout(HttpSession session, Model model) throws Exception {
+//	@ResponseBody
+	public String Logout(HttpSession session) throws Exception {
 		System.out.println("===============logoutredirect=====================");
 		
 		String access_token = (String) session.getAttribute("access_token");
+		System.out.println("access_token입니다.");
 		
-		/**
-		 * session.getAttribute("access_token")이 존재 확인
-		 */
+//		/**
+//		 * session.getAttribute("access_token")이 존재 확인
+//		 */
 		if(access_token != null) {
 			String JsonString=conn.HttpPostLogout(access_token);
 			//String JsonString=conn.HttpPostLogOut(access_token);
@@ -126,7 +146,7 @@ public class LovveyTestController {
 			System.out.println("===============logoutredirect 성공역역입니다.=====================");
 			
 		}else {
-			model.addAttribute("error", "세션이 존재 하지 않습니다.");
+			
 			System.out.println("===============logoutredirectError영역입니다.=====================");	
 		}
 
@@ -141,6 +161,37 @@ public class LovveyTestController {
 		return "/kakaologin";
 	}
 	
+	
+	@RequestMapping(value ="/kakaouserinfo", method=RequestMethod.POST)
+	@ResponseBody
+	public String UserInfo( String access_token) throws Exception{
+		
+//		String access_token= (String)session.getAttribute("access_token");
+		String userInfo = null;
+		
+		if(hasAccessToken(access_token)) {
+		userInfo= conn.getUserInfo(access_token);
+		}
+		
+		return userInfo;
+	}
+	
+	
+	
+	
+	
+	
+	
+	public Boolean hasAccessToken(String access_token) {
+		
+		
+		if(access_token !=null) {
+			
+			return true;
+		}
+		return false;
+				
+	}
 	
 
 }
